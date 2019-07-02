@@ -94,6 +94,22 @@ func (a *App) getBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) ceateBook(w http.ResponseWriter, r *http.Request) {
+	var b Book
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&b); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+
+	id, err := b.createBook(a.DB)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusCreated, id)
 }
 
 func (a *App) updateBook(w http.ResponseWriter, r *http.Request) {

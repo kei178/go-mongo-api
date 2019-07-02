@@ -41,9 +41,17 @@ func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
 }
 
 func (b *Book) getBook(db *mongo.Database) error {
-	// TODO: need to fix always responding one record
+	// TODO: need to fix always responding one
 	col := db.Collection(bookCollectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	err := col.FindOne(ctx, b).Decode(&b)
 	return err
+}
+
+func (b *Book) createBook(db *mongo.Database) (map[string]string, error) {
+	col := db.Collection(bookCollectionName)
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	result, err := col.InsertOne(ctx, b)
+	id := map[string]string{"_id": result.InsertedID.(primitive.ObjectID).Hex()}
+	return id, err
 }
