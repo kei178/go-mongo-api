@@ -1,9 +1,41 @@
 package main
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"context"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"gopkg.in/mgo.v2/bson"
+)
 
 type Book struct {
 	ID     primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Title  string             `json:"title,omitempty" bson:"title,omitempty"`
 	Author string             `json:"author,omitempty" bson:"author,omitempty"`
+}
+
+var bookCollectionName = "books"
+
+func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
+	collection := db.Collection(bookCollectionName)
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	cursor, err := collection.Find(ctx, bson.M{}) // find all
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var bs []Book
+	for cursor.Next(ctx) {
+		var b Book
+		cursor.Decode(&b)
+		bs = append(bs, b)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return bs, nil
 }
