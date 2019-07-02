@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -80,6 +81,16 @@ func (a *App) getBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) getBook(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := primitive.ObjectIDFromHex(vars["id"])
+
+	b := Book{ID: id}
+	if err := b.getBook(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, b)
 }
 
 func (a *App) ceateBook(w http.ResponseWriter, r *http.Request) {

@@ -18,9 +18,9 @@ type Book struct {
 var bookCollectionName = "books"
 
 func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
-	collection := db.Collection(bookCollectionName)
+	col := db.Collection(bookCollectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	cursor, err := collection.Find(ctx, bson.M{}) // find all
+	cursor, err := col.Find(ctx, bson.M{}) // find all
 	if err != nil {
 		return nil, err
 	}
@@ -38,4 +38,12 @@ func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
 	}
 
 	return bs, nil
+}
+
+func (b *Book) getBook(db *mongo.Database) error {
+	// TODO: need to fix always responding one record
+	col := db.Collection(bookCollectionName)
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	err := col.FindOne(ctx, b).Decode(&b)
+	return err
 }
