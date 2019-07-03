@@ -113,6 +113,25 @@ func (a *App) ceateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) updateBook(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := primitive.ObjectIDFromHex(vars["id"])
+
+	var ub Book
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&ub); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		return
+	}
+	defer r.Body.Close()
+
+	b := Book{ID: id}
+	err := b.updateBook(a.DB, ub)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, b)
 }
 
 func (a *App) deleteBook(w http.ResponseWriter, r *http.Request) {

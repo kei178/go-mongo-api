@@ -20,6 +20,7 @@ var bookCollectionName = "books"
 func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
 	col := db.Collection(bookCollectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+
 	cursor, err := col.Find(ctx, bson.M{}) // find all
 	if err != nil {
 		return nil, err
@@ -41,17 +42,31 @@ func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
 }
 
 func (b *Book) getBook(db *mongo.Database) error {
-	// TODO: need to fix always responding one
 	col := db.Collection(bookCollectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	err := col.FindOne(ctx, b).Decode(&b)
+
+	filter := bson.M{"_id": b.ID}
+	err := col.FindOne(ctx, filter).Decode(&b)
 	return err
 }
 
 func (b *Book) createBook(db *mongo.Database) (map[string]string, error) {
 	col := db.Collection(bookCollectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+
 	result, err := col.InsertOne(ctx, b)
 	id := map[string]string{"_id": result.InsertedID.(primitive.ObjectID).Hex()}
 	return id, err
+}
+
+func (b *Book) updateBook(db *mongo.Database, ub Book) error {
+	col := db.Collection(bookCollectionName)
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+
+	filter := bson.M{"_id": b.ID}
+	update := bson.M{"$set": ub}
+	_, err := col.UpdateOne(ctx, filter, update)
+	// Get the updated document
+	col.FindOne(ctx, filter).Decode(&b)
+	return err
 }
