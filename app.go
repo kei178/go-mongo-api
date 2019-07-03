@@ -86,7 +86,12 @@ func (a *App) getBook(w http.ResponseWriter, r *http.Request) {
 
 	b := Book{ID: id}
 	if err := b.getBook(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		switch err {
+		case mongo.ErrNoDocuments:
+			respondWithError(w, http.StatusNotFound, "Book not found")
+		default:
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+		}
 		return
 	}
 
