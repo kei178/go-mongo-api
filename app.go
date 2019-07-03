@@ -30,7 +30,7 @@ func (a *App) Run(addr string) {
 func (a *App) Initialize(_user, _password string) {
 	fmt.Println("Starting the application....")
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx := dbContext(10)
 	a.DB, _ = a.configDB(ctx)
 	fmt.Println("Connected to MongoDB!")
 
@@ -164,4 +164,9 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
+}
+
+func dbContext(i time.Duration) context.Context {
+	ctx, _ := context.WithTimeout(context.Background(), i*time.Second)
+	return ctx
 }
