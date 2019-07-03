@@ -18,8 +18,8 @@ type Book struct {
 var bookCollectionName = "books"
 
 func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
-	col := db.Collection(bookCollectionName)
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	col := booksCollection(db)
+	ctx := dbContext(30)
 
 	cursor, err := col.Find(ctx, bson.M{}) // find all
 	if err != nil {
@@ -42,31 +42,51 @@ func getBooks(db *mongo.Database, start, count int) ([]Book, error) {
 }
 
 func (b *Book) getBook(db *mongo.Database) error {
-	col := db.Collection(bookCollectionName)
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	col := booksCollection(db)
+	ctx := dbContext(30)
 
 	filter := bson.M{"_id": b.ID}
 	err := col.FindOne(ctx, filter).Decode(&b)
 	return err
 }
 
-func (b *Book) createBook(db *mongo.Database) (map[string]string, error) {
-	col := db.Collection(bookCollectionName)
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+func (b *Book) createBook(db *mongo.Database) (*mongo.InsertOneResult, error) {
+	col := booksCollection(db)
+	ctx := dbContext(30)
 
 	result, err := col.InsertOne(ctx, b)
-	id := map[string]string{"_id": result.InsertedID.(primitive.ObjectID).Hex()}
-	return id, err
+	// Convert to map[string]string
+	// id := map[string]string{"_id": result.InsertedID.(primitive.ObjectID).Hex()}
+	return result, err
 }
 
-func (b *Book) updateBook(db *mongo.Database, ub Book) error {
-	col := db.Collection(bookCollectionName)
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+func (b *Book) updateBook(db *mongo.Database, ub Book) (*mongo.UpdateResult, error) {
+	col := booksCollection(db)
+	ctx := dbContext(30)
 
 	filter := bson.M{"_id": b.ID}
 	update := bson.M{"$set": ub}
-	_, err := col.UpdateOne(ctx, filter, update)
+	result, err := col.UpdateOne(ctx, filter, update)
 	// Get the updated document
-	col.FindOne(ctx, filter).Decode(&b)
-	return err
+	// col.FindOne(ctx, filter).Decode(&b)
+	return result, err
+}
+
+func (b *Book) deleteBook(db *mongo.Database) (*mongo.DeleteResult, error) {
+	col := booksCollection(db)
+	ctx := dbContext(30)
+
+	filter := bson.M{"_id": b.ID}
+	result, err := col.DeleteOne(ctx, filter)
+	return result, err
+}
+
+// helpers
+func booksCollection(db *mongo.Database) *mongo.Collection {
+	return db.Collection(bookCollectionName)
+}
+
+func dbContext(i time.Duration) context.Context {
+	ctx, _ := context.WithTimeout(context.Background(), i*time.Second)
+	return ctx
 }

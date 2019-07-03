@@ -103,13 +103,13 @@ func (a *App) ceateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	id, err := b.createBook(a.DB)
+	result, err := b.createBook(a.DB)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, id)
+	respondWithJSON(w, http.StatusCreated, result)
 }
 
 func (a *App) updateBook(w http.ResponseWriter, r *http.Request) {
@@ -125,16 +125,27 @@ func (a *App) updateBook(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	b := Book{ID: id}
-	err := b.updateBook(a.DB, ub)
+	result, err := b.updateBook(a.DB, ub)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, b)
+	respondWithJSON(w, http.StatusOK, result)
 }
 
 func (a *App) deleteBook(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := primitive.ObjectIDFromHex(vars["id"])
+
+	b := Book{ID: id}
+	result, err := b.deleteBook(a.DB)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, result)
 }
 
 // helpers
