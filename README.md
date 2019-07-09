@@ -1,2 +1,2 @@
 # go-mongo-api
-Golang API with MongoDB
+REST API example with GO & MongoDB
