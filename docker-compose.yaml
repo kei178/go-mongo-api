@@ -2,15 +2,27 @@ version: '3.3'
 services:
   api:
     container_name: 'api'
-    build: './api'
+    restart: always
+    build: 
+      context: './api'
+      dockerfile: Dockerfile.dev
     ports:
       - '8080:8080'
     volumes:
-      - './api:/go/src/app'
-    depends_on:
+      - go/src/app/tmp
+      - ./api:/go/src/app
+    depends_on: 
       - 'mongo'
   mongo:
     image: 'mongo:latest'
     container_name: 'mongo'
     ports:
       - '27017:27017'
+  tests:
+    build:  
+      context: ./api
+      dockerfile: Dockerfile.dev 
+    volumes:
+      - go/src/app/tmp
+      - ./api:/go/src/app
+    command: ["go", "test", "-v"]
