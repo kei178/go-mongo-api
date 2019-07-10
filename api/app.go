@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var mongoURL = "mongodb://localhost:27017"
+var mongoURL = "mongodb://mongo:27017"
 var dbName = "gomongoapi"
 
 type App struct {
