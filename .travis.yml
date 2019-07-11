@@ -3,7 +3,8 @@ services:
   - docker
 
 before_install:
-  - docker build -t kei178/go-mongo-api -f ./api/Dockerfile.dev .
+  - docker build -t kei178/go-mongo-api -f ./api/Dockerfile.dev ./api/
+  - docker run --name mongodb -d mongo:latest
 
 script:
-  - docker run kei178/go-mongo-api go test -v
+  - docker run -e CI=true --link mongodb:mongo -it kei178/go-mongo-api go test -v 
