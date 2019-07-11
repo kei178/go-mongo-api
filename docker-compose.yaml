@@ -4,7 +4,7 @@ services:
     container_name: 'api'
     restart: always
     build: 
-      context: './api'
+      context: ./api
       dockerfile: Dockerfile.dev
     ports:
       - '8080:8080'
