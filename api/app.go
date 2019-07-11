@@ -54,10 +54,10 @@ func (a *App) configDB(ctx context.Context) (*mongo.Database, error) {
 // routing
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/books", a.getBooks).Methods("GET")
-	a.Router.HandleFunc("/book/{id}", a.getBook).Methods("GET")
-	a.Router.HandleFunc("/book", a.ceateBook).Methods("POST")
-	a.Router.HandleFunc("/book/{id}", a.updateBook).Methods("PUT")
-	a.Router.HandleFunc("/book/{id}", a.deleteBook).Methods("DELETE")
+	a.Router.HandleFunc("/books/{id}", a.getBook).Methods("GET")
+	a.Router.HandleFunc("/books", a.ceateBook).Methods("POST")
+	a.Router.HandleFunc("/books/{id}", a.updateBook).Methods("PUT")
+	a.Router.HandleFunc("/books/{id}", a.deleteBook).Methods("DELETE")
 }
 
 func (a *App) getBooks(w http.ResponseWriter, r *http.Request) {

@@ -73,7 +73,7 @@ func addBooks(count int) []string {
 func TestGetNonExistentBook(t *testing.T) {
 	clearDB()
 
-	req, _ := http.NewRequest("GET", "/book/1", nil)
+	req, _ := http.NewRequest("GET", "/books/1", nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusNotFound, response.Code)
@@ -99,7 +99,7 @@ func TestGetBook(t *testing.T) {
 	clearDB()
 	id := addBooks(1)[0]
 
-	req, _ := http.NewRequest("GET", "/book/"+id, nil)
+	req, _ := http.NewRequest("GET", "/books/"+id, nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, response.Code)
@@ -110,7 +110,7 @@ func TestCreateBook(t *testing.T) {
 
 	payload := []byte(`{"title":"Golang for beginners","author":"kei178"}`)
 
-	req, _ := http.NewRequest("POST", "/book", bytes.NewBuffer(payload))
+	req, _ := http.NewRequest("POST", "/books", bytes.NewBuffer(payload))
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusCreated, response.Code)
@@ -121,7 +121,7 @@ func TestUpdateBook(t *testing.T) {
 	id := addBooks(1)[0]
 
 	payload := []byte(`{"title":"Golang for beginners","author":"kei178"}`)
-	req, _ := http.NewRequest("PUT", "/book/"+id, bytes.NewBuffer(payload))
+	req, _ := http.NewRequest("PUT", "/books/"+id, bytes.NewBuffer(payload))
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, response.Code)
@@ -131,12 +131,12 @@ func TestDeleteBook(t *testing.T) {
 	clearDB()
 	id := addBooks(1)[0]
 
-	req, _ := http.NewRequest("DELETE", "/book/"+id, nil)
+	req, _ := http.NewRequest("DELETE", "/books/"+id, nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, response.Code)
 
-	req, _ = http.NewRequest("GET", "/book/"+id, nil)
+	req, _ = http.NewRequest("GET", "/books/"+id, nil)
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
