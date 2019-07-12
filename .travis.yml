@@ -8,5 +8,3 @@ before_install:
 script:
   - docker run --name mongodb -d mongo:latest
   - docker run -e CI=true --link mongodb:mongo -it kei178/go-mongo-api go test -v 
-
-# TODO: Pending: The Travis CI build is in progress... mongo container is problem?
