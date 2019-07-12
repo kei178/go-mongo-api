@@ -41,6 +41,6 @@ Books APIs are as follows:
 |------|---|---------------|---------------|----------------|
 |GET|/books| | |Book[]|
 |POST|/books|Content-Type: "application/json"|Book|Create result|
-|GET|/books/10 | | | |Book|
-|PUT|/books/10 |Content-Type: "application/json"|Book|Update result|
-|DELETE|/books/10 | | |Delete result| 
+|GET|/books/:id | | |Book|
+|PUT|/books/:id |Content-Type: "application/json"|Book|Update result|
+|DELETE|/books/:id | | |Delete result| 
