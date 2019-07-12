@@ -37,10 +37,10 @@ The entity Book has the following fields:
 
 Books APIs are as follows:
 
-|METHOD|ENDPOINT|REQUEST HEADERS|REQUEST PAYLOAD|RESPONSE HEADERS|RESPONSE PAYLOAD|
-|------|---|---------------|---------------|----------------|----------------|
-|GET|/books| | | |Book[]|
-|POST|/books|Content-Type: "application/json"|Book||Book|
+|METHOD|ENDPOINT|REQUEST HEADERS|REQUEST PAYLOAD|RESPONSE PAYLOAD|
+|------|---|---------------|---------------|----------------|
+|GET|/books| | |Book[]|
+|POST|/books|Content-Type: "application/json"|Book|Book|
 |GET|/books/10 | | | |Book|
-|PUT|/books/10 |Content-Type: "application/json"|Book||Book|
-|DELETE|/books/10 | | |Book|Book| 
+|PUT|/books/10 |Content-Type: "application/json"|Book|Book|
+|DELETE|/books/10 | | |Book| 
