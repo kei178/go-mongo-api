@@ -40,7 +40,7 @@ Books APIs are as follows:
 |METHOD|ENDPOINT|REQUEST HEADERS|REQUEST PAYLOAD|RESPONSE PAYLOAD|
 |------|---|---------------|---------------|----------------|
 |GET|/books| | |Book[]|
-|POST|/books|Content-Type: "application/json"|Book|Book|
+|POST|/books|Content-Type: "application/json"|Book|Create result|
 |GET|/books/10 | | | |Book|
-|PUT|/books/10 |Content-Type: "application/json"|Book|Book|
-|DELETE|/books/10 | | |Book| 
+|PUT|/books/10 |Content-Type: "application/json"|Book|Update result|
+|DELETE|/books/10 | | |Delete result| 
