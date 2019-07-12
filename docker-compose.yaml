@@ -9,7 +9,6 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - go/src/app/tmp
       - ./api:/go/src/app
     depends_on: 
       - 'mongo'
@@ -23,6 +22,5 @@ services:
       context: ./api
       dockerfile: Dockerfile.dev 
     volumes:
-      - go/src/app/tmp
       - ./api:/go/src/app
     command: ["go", "test", "-v"]
